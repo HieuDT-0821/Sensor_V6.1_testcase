@@ -1,44 +1,40 @@
 #include "ctiic.h"
 #include "delay.h"	 
 //////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌÐòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßÐí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32¿ª·¢°å
-//µçÈÝ´¥ÃþÆÁ-IIC Çý¶¯´úÂë	   
-//ÕýµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2015/12/28
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖÝÊÐÐÇÒíµç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾ 2014-2024
+
+//åˆ›å»ºæ—¥æœŸ:2015/12/28
+//ç‰ˆæœ¬ï¼šV1.0
+//ç‰ˆæƒæ‰€æœ‰ï¼Œç›—ç‰ˆå¿…ç©¶ã€‚
+//Copyright(C) å¹¿å·žå¸‚æ˜Ÿç¿¼ç”µå­ç§‘æŠ€æœ‰é™å…¬å¸ 2014-2024
 //All rights reserved									  
 //********************************************************************************
-//ÎÞ
+//æ— 
 ////////////////////////////////////////////////////////////////////////////////// 	
 
-//¿ØÖÆI2CËÙ¶ÈµÄÑÓÊ±
+//æŽ§åˆ¶I2Cé€Ÿåº¦çš„å»¶æ—¶
 void CT_Delay(void)
 {
 	delay_us(2);
 } 
 
-//µçÈÝ´¥ÃþÐ¾Æ¬IIC½Ó¿Ú³õÊ¼»¯
+//ç”µå®¹è§¦æ‘¸èŠ¯ç‰‡IICæŽ¥å£åˆå§‹åŒ–
 void CT_IIC_Init(void)
 {					     
     GPIO_InitTypeDef GPIO_Initure;
-    __HAL_RCC_GPIOH_CLK_ENABLE();			//¿ªÆôGPIOHÊ±ÖÓ
-	__HAL_RCC_GPIOI_CLK_ENABLE();			//¿ªÆôGPIOIÊ±ÖÓ
+    __HAL_RCC_GPIOH_CLK_ENABLE();			//å¼€å¯GPIOHæ—¶é’Ÿ
+	__HAL_RCC_GPIOI_CLK_ENABLE();			//å¼€å¯GPIOIæ—¶é’Ÿ
     
     GPIO_Initure.Pin=GPIO_PIN_6;            //PH6
-    GPIO_Initure.Mode=GPIO_MODE_OUTPUT_OD;  //¿ªÂ©Êä³ö
-    GPIO_Initure.Pull=GPIO_PULLUP;          //ÉÏÀ­
-    GPIO_Initure.Speed=GPIO_SPEED_FREQ_VERY_HIGH;     //¸ßËÙ
-    HAL_GPIO_Init(GPIOH,&GPIO_Initure);     //³õÊ¼»¯
+    GPIO_Initure.Mode=GPIO_MODE_OUTPUT_OD;  //å¼€æ¼è¾“å‡º
+    GPIO_Initure.Pull=GPIO_PULLUP;          //ä¸Šæ‹‰
+    GPIO_Initure.Speed=GPIO_SPEED_FREQ_VERY_HIGH;     //é«˜é€Ÿ
+    HAL_GPIO_Init(GPIOH,&GPIO_Initure);     //åˆå§‹åŒ–
 	
     GPIO_Initure.Pin=GPIO_PIN_3;            //PI3
-    HAL_GPIO_Init(GPIOI,&GPIO_Initure);     //³õÊ¼»¯
+    HAL_GPIO_Init(GPIOI,&GPIO_Initure);     //åˆå§‹åŒ–
 }
 
-//²úÉúIICÆðÊ¼ÐÅºÅ
+//äº§ç”ŸIICèµ·å§‹ä¿¡å·
 void CT_IIC_Start(void)
 {
 	CT_IIC_SDA(1);	  	  
@@ -46,11 +42,11 @@ void CT_IIC_Start(void)
     CT_Delay();
  	CT_IIC_SDA(0);//START:when CLK is high,DATA change form high to low 
     CT_Delay();
-	CT_IIC_SCL(0);//Ç¯×¡I2C×ÜÏß£¬×¼±¸·¢ËÍ»ò½ÓÊÕÊý¾Ý 
+	CT_IIC_SCL(0);//é’³ä½I2Cæ€»çº¿ï¼Œå‡†å¤‡å‘é€æˆ–æŽ¥æ”¶æ•°æ® 
     CT_Delay();
 }	 
 
-//²úÉúIICÍ£Ö¹ÐÅºÅ
+//äº§ç”ŸIICåœæ­¢ä¿¡å·
 void CT_IIC_Stop(void)
 {
 	CT_IIC_SDA(0);
@@ -59,17 +55,15 @@ void CT_IIC_Stop(void)
 	CT_IIC_SDA(1);//STOP:when CLK is high DATA change form low to high
 	CT_Delay();
 }
-//µÈ´ýÓ¦´ðÐÅºÅµ½À´
-//·µ»ØÖµ£º1£¬½ÓÊÕÓ¦´ðÊ§°Ü
-//        0£¬½ÓÊÕÓ¦´ð³É¹¦
+//ç­‰å¾…åº”ç­”ä¿¡å·åˆ°æ¥
+//è¿”å›žå€¼ï¼š1ï¼ŒæŽ¥æ”¶åº”ç­”å¤±è´¥
+//        0ï¼ŒæŽ¥æ”¶åº”ç­”æˆåŠŸ
 u8 CT_IIC_Wait_Ack(void)
 {
 	u8 ucErrTime=0;
     u8 rack = 0;
 
 	CT_IIC_SDA(1);	
-	CT_Delay();
-	CT_IIC_SCL(1);
 	CT_Delay();
     
 	while(CT_READ_SDA)
@@ -84,12 +78,12 @@ u8 CT_IIC_Wait_Ack(void)
 		} 
 	}
     
-	CT_IIC_SCL(0);//Ê±ÖÓÊä³ö0 	
+	CT_IIC_SCL(0);//æ—¶é’Ÿè¾“å‡º0 	
     CT_Delay(); 
     return rack;
 } 
 
-//²úÉúACKÓ¦´ð
+//äº§ç”ŸACKåº”ç­”
 void CT_IIC_Ack(void)
 {
 	CT_IIC_SDA(0);
@@ -101,7 +95,7 @@ void CT_IIC_Ack(void)
 	CT_IIC_SDA(1);
 	CT_Delay();
 }
-//²»²úÉúACKÓ¦´ð		    
+//ä¸äº§ç”ŸACKåº”ç­”		    
 void CT_IIC_NAck(void)
 {
 	CT_IIC_SDA(1);
@@ -111,10 +105,10 @@ void CT_IIC_NAck(void)
 	CT_IIC_SCL(0);
     CT_Delay();
 }					 				     
-//IIC·¢ËÍÒ»¸ö×Ö½Ú
-//·µ»Ø´Ó»úÓÐÎÞÓ¦´ð
-//1£¬ÓÐÓ¦´ð
-//0£¬ÎÞÓ¦´ð			  
+//IICå‘é€ä¸€ä¸ªå­—èŠ‚
+//è¿”å›žä»Žæœºæœ‰æ— åº”ç­”
+//1ï¼Œæœ‰åº”ç­”
+//0ï¼Œæ— åº”ç­”			  
 void CT_IIC_Send_Byte(u8 txd)
 {                        
     u8 t;   
@@ -130,7 +124,7 @@ void CT_IIC_Send_Byte(u8 txd)
     }
     CT_IIC_SDA(1);
 } 	    
-//¶Á1¸ö×Ö½Ú£¬ack=1Ê±£¬·¢ËÍACK£¬ack=0£¬·¢ËÍnACK   
+//è¯»1ä¸ªå­—èŠ‚ï¼Œack=1æ—¶ï¼Œå‘é€ACKï¼Œack=0ï¼Œå‘é€nACK   
 u8 CT_IIC_Read_Byte(unsigned char ack)
 {
 	u8 i,receive=0;
@@ -147,9 +141,9 @@ u8 CT_IIC_Read_Byte(unsigned char ack)
         
 	}	  				 
 	if (!ack)
-        CT_IIC_NAck();//·¢ËÍnACK
+        CT_IIC_NAck();//å‘é€nACK
 	else 
-        CT_IIC_Ack(); //·¢ËÍACK   
+        CT_IIC_Ack(); //å‘é€ACK   
  	return receive;
 }
 
